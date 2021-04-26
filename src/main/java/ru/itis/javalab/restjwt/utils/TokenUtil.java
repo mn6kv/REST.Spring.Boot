@@ -1,10 +1,11 @@
 package ru.itis.javalab.restjwt.utils;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.security.core.userdetails.UserDetails;
 import ru.itis.javalab.restjwt.dto.UserDto;
-import ru.itis.javalab.restjwt.models.User;
 
 public interface TokenUtil {
-    public String create(UserDto user);
-    public DecodedJWT verify(String token);
+    String create(UserDto user);
+    DecodedJWT verify(String token);
+    UserDetails getUserDetails(String token);
 }

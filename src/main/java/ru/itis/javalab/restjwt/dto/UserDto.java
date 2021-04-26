@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class UserDto {
     private long id;
+    private String hashPassword;
     private String email;
     private String name;
     private User.State state;
