@@ -30,6 +30,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    private String refreshToken;
+
     public enum State {
         ACTIVE, BANNED
     }

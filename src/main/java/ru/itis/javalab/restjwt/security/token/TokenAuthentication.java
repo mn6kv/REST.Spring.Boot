@@ -1,9 +1,5 @@
 package ru.itis.javalab.restjwt.security.token;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +18,12 @@ public class TokenAuthentication implements Authentication {
 
     private boolean isAuthenticated;
 
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
-    public TokenAuthentication(String token) {
-        this.token = token;
+    public TokenAuthentication(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
         public void setUserDetails(UserDetails userDetails) {
@@ -67,7 +65,11 @@ public class TokenAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return token;
+        return accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 }
 

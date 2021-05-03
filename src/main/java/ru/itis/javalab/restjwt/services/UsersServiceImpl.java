@@ -24,6 +24,9 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    TokenService tokenService;
+
     @Override
     public List<UserDto> getAllUsers(String token) {
         DecodedJWT decodedJWT = tokenUtil.verify(token);
@@ -49,24 +52,32 @@ public class UsersServiceImpl implements UsersService {
                 .name(user.getName())
                 .state(user.getState())
                 .role(user.getRole())
+                .refreshToken(user.getRefreshToken())
                 .build())
                 : null;
     }
 
     @Override
-    public String signUp(UserDto user) {
-        String token = tokenUtil.create(user);
-        if (this.addUser(user) != null)
-            return token;
+    public String[] signUp(UserDto user) {
+        String accessToken = tokenUtil.createAccess(user);
+        String refreshToken = tokenUtil.createRefresh(user);
+        user.setRefreshToken(refreshToken);
+        if (this.addUser(user) != null) {
+//            tokenService.setRefreshToken(user.getEmail(), refreshToken);
+            return new String[]{accessToken, refreshToken};
+        }
         return null;
     }
 
     @Override
-    public String signIn(UserDto userDto) {
+    public String[] signIn(UserDto userDto) {
         User dbUser = usersRepository.findByEmail(userDto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (passwordEncoder.matches(userDto.getHashPassword(), dbUser.getHashPassword()))
-            return tokenUtil.create(userDto);
-        else throw new UsernameNotFoundException("Invalid username or password");
+        if (passwordEncoder.matches(userDto.getHashPassword(), dbUser.getHashPassword())) {
+            String accessToken = tokenUtil.createAccess(userDto);
+            String refreshToken = tokenUtil.createRefresh(userDto);
+            tokenService.setRefreshToken(userDto.getEmail(), refreshToken);
+            return new String[]{accessToken, refreshToken};
+        } else throw new UsernameNotFoundException("Invalid username or password");
     }
 }

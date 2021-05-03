@@ -14,10 +14,10 @@ public class SignUpController {
     UsersService usersService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<String> signUp(@RequestBody UserDto userDto) {
-        String token = usersService.signUp(userDto);
-        return token != null
-                ? new ResponseEntity<>(token, HttpStatus.CREATED)
+    public ResponseEntity<String[]> signUp(@RequestBody UserDto userDto) {
+        String[] tokens = usersService.signUp(userDto);
+        return tokens != null
+                ? new ResponseEntity<>(tokens, HttpStatus.CREATED)
                 : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

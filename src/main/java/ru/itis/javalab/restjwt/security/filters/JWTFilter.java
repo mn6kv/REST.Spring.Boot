@@ -16,10 +16,11 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        String token = request.getHeader("XSRF-TOKEN");
+        String accessToken = request.getHeader("XSRF-TOKEN");
+        String refreshToken = request.getHeader("REF-TOKEN");
 
-        if (token != null) {
-            TokenAuthentication tokenAuthentication = new TokenAuthentication(token);
+        if (accessToken != null && refreshToken != null) {
+            TokenAuthentication tokenAuthentication = new TokenAuthentication(accessToken, refreshToken);
             SecurityContextHolder.getContext().setAuthentication(tokenAuthentication);
         }
         filterChain.doFilter(request, response);

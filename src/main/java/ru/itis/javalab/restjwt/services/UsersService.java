@@ -8,6 +8,6 @@ import java.util.List;
 public interface UsersService {
     List<UserDto> getAllUsers(String token);
     User addUser(String token, UserDto user);
-    String signUp(UserDto user);
-    String signIn(UserDto userDto);
+    String[] signUp(UserDto user);
+    String[] signIn(UserDto userDto);
 }

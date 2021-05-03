@@ -18,6 +18,7 @@ public class UserDto {
     private String name;
     private User.State state;
     private User.Role role;
+    private String refreshToken;
 
     public static UserDto from(User user) {
         if (user == null) {

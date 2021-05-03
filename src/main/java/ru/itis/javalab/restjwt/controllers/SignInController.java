@@ -21,10 +21,10 @@ public class SignInController {
     private UsersService usersService;
 
     @PostMapping("/signIn")
-    public ResponseEntity<String> signIn(@RequestBody UserDto userDto) {
-        String token = usersService.signIn(userDto);
-        return token != null
-                ? new ResponseEntity<>(token, HttpStatus.OK)
+    public ResponseEntity<String[]> signIn(@RequestBody UserDto userDto) {
+        String[] tokens = usersService.signIn(userDto);
+        return tokens != null
+                ? new ResponseEntity<>(tokens, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
