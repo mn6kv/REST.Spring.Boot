@@ -12,8 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import ru.itis.javalab.restjwt.security.filters.JWTFilter;
+import ru.itis.javalab.restjwt.security.filters.JWTAuthFilter;
+import ru.itis.javalab.restjwt.security.filters.JWTLogoutFilter;
 import ru.itis.javalab.restjwt.security.token.TokenProvider;
 
 /**
@@ -28,7 +30,10 @@ import ru.itis.javalab.restjwt.security.token.TokenProvider;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    JWTFilter jwtFilter;
+    JWTAuthFilter jwtAuthFilter;
+
+    @Autowired
+    JWTLogoutFilter logoutFilter;
 
     @Autowired
     TokenProvider tokenProvider;
@@ -49,7 +54,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(logoutFilter, LogoutFilter.class)
                 .authorizeRequests()
                 .antMatchers("/signIn").permitAll()
                 .antMatchers("/signUp").permitAll()

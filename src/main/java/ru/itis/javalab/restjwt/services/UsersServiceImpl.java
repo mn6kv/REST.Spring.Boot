@@ -27,6 +27,9 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     TokenService tokenService;
 
+    @Autowired
+    JWTBlackListService blackListService;
+
     @Override
     public List<UserDto> getAllUsers(String token) {
         DecodedJWT decodedJWT = tokenUtil.verify(token);
@@ -38,7 +41,8 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public User addUser(String token, UserDto user) {
         DecodedJWT decodedJWT = tokenUtil.verify(token);
-        if (decodedJWT.getClaim("state").asString().equals(User.State.BANNED.toString()) ||
+        if (blackListService.exists(token) ||
+                decodedJWT.getClaim("state").asString().equals(User.State.BANNED.toString()) ||
                 !decodedJWT.getClaim("role").asString().equals(User.Role.ADMIN.toString()))
             return null;
         return this.addUser(user);
